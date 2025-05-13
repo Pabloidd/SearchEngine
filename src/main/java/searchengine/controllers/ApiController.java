@@ -8,7 +8,7 @@ import searchengine.dto.statistics.StatisticsResponse;
 import searchengine.services.StatisticsService;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api")//все запросы, начинающиеся с /api, будут направляться на методы этого контроллера.
 public class ApiController {
 
     private final StatisticsService statisticsService;

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Random;
 
 @Service
-@RequiredArgsConstructor
+@RequiredArgsConstructor// добавляет в него конструктор с аргументами, соответствующими неинициализированным final-полям класса.
 public class StatisticsServiceImpl implements StatisticsService {
 
     private final Random random = new Random();
