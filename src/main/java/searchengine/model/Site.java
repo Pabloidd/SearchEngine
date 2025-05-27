@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Setter
 public class Site {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)//автоинкремент
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Enumerated(EnumType.STRING)//enum будет восприниматься как строка
