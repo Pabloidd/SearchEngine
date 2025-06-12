@@ -6,10 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import searchengine.config.IndexingProperties;
 import searchengine.config.SitesList;
-import searchengine.model.Site;
-import searchengine.model.SiteStatus;
-import searchengine.repository.PageRepository;
-import searchengine.repository.SiteRepository;
+import searchengine.model.*;
+import searchengine.repository.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -23,7 +21,10 @@ public class IndexingServiceImpl implements IndexingService {
     private final SitesList sitesList;
     private final SiteRepository siteRepository;
     private final PageRepository pageRepository;
+    private final LemmaRepository lemmaRepository;
+    private final IndexRepository indexRepository;
     private final IndexingProperties indexingProperties;
+    private final LemmaFinder lemmaFinder;
 
     private ExecutorService siteExecutor;
     private List<Future<?>> siteFutures;
@@ -53,7 +54,10 @@ public class IndexingServiceImpl implements IndexingService {
                             site,
                             pageRepository,
                             siteRepository,
-                            indexingProperties
+                            lemmaRepository,
+                            indexRepository,
+                            indexingProperties,
+                            lemmaFinder
                     ).indexSite();
                 } catch (Exception e) {
                     log.warn("Indexing failed for {}: {}", configSite.getUrl(), e.getMessage());
@@ -91,10 +95,37 @@ public class IndexingServiceImpl implements IndexingService {
         return true;
     }
 
+    @Override
+    public boolean indexPage(String url) {
+        for (searchengine.config.Site configSite : sitesList.getSites()) {
+            if (url.startsWith(configSite.getUrl())) {
+                try {
+                    Site site = prepareSiteForIndexing(configSite);
+                    new SiteIndexer(
+                            configSite.getUrl(),
+                            site,
+                            pageRepository,
+                            siteRepository,
+                            lemmaRepository,
+                            indexRepository,
+                            indexingProperties,
+                            lemmaFinder
+                    ).indexSinglePage(url);
+                    return true;
+                } catch (Exception e) {
+                    log.error("Error indexing page {}: {}", url, e.getMessage());
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
+
     private Site prepareSiteForIndexing(searchengine.config.Site configSite) {
         Site existingSite = siteRepository.findByUrl(configSite.getUrl());
         if (existingSite != null) {
             pageRepository.deleteBySite(existingSite);
+            lemmaRepository.deleteBySite(existingSite);
             siteRepository.delete(existingSite);
             siteRepository.resetAutoIncrement();
         }

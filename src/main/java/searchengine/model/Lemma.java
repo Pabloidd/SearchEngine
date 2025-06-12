@@ -5,12 +5,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "page", indexes = {
-        @jakarta.persistence.Index(name = "idx_path", columnList = "path")
-})
+@Table(name = "lemma")
 @Getter
 @Setter
-public class Page {
+public class Lemma {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -19,12 +17,9 @@ public class Page {
     @JoinColumn(name = "site_id", nullable = false)
     private Site site;
 
-    @Column(name = "path", nullable = false, length = 512)
-    private String path;
+    @Column(nullable = false)
+    private String lemma;
 
     @Column(nullable = false)
-    private Integer code;
-
-    @Column(nullable = false, columnDefinition = "MEDIUMTEXT")
-    private String content;
+    private Integer frequency;
 }
