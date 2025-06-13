@@ -21,16 +21,19 @@ public class StatisticsServiceImpl implements StatisticsService {
 
     @Override
     public StatisticsResponse getStatistics() {
+        // Создаем общую статистику
         TotalStatistics total = new TotalStatistics();
         total.setSites((int) siteRepository.count());
         total.setPages((int) pageRepository.count());
         total.setLemmas((int) lemmaRepository.count());
         total.setIndexing(isIndexingActive());
 
+        // Создаем детализированную статистику по каждому сайту
         List<DetailedStatisticsItem> detailed = siteRepository.findAll().stream()
                 .map(this::convertToDetailedStatistics)
                 .collect(Collectors.toList());
 
+        // Формируем ответ
         StatisticsData data = new StatisticsData();
         data.setTotal(total);
         data.setDetailed(detailed);
@@ -41,6 +44,9 @@ public class StatisticsServiceImpl implements StatisticsService {
         return response;
     }
 
+    /**
+     * Конвертирует данные сайта в объект детализированной статистики
+     */
     private DetailedStatisticsItem convertToDetailedStatistics(Site site) {
         DetailedStatisticsItem item = new DetailedStatisticsItem();
         item.setName(site.getName());
@@ -53,6 +59,9 @@ public class StatisticsServiceImpl implements StatisticsService {
         return item;
     }
 
+    /**
+     * Проверяет, идет ли в данный момент индексация
+     */
     private boolean isIndexingActive() {
         return siteRepository.countByStatus(SiteStatus.INDEXING) > 0;
     }

@@ -3,7 +3,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/search_engine?useSSL=false
+    url: jdbc:mysql://localhost:3306/search_engine?allowPublicKeyRetrieval=true&useSSL=false
     username: root
     password: 8818165957
   jpa:
@@ -49,3 +49,8 @@ logging:
     root: INFO
     searchengine: INFO
     org.hibernate.SQL: WARN
+
+search:
+  max-snippet-length: 150
+  words-around-match: 5
+  max-lemma-frequency-percent: 80

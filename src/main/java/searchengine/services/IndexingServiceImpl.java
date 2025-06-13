@@ -8,7 +8,6 @@ import searchengine.config.IndexingProperties;
 import searchengine.config.SitesList;
 import searchengine.model.*;
 import searchengine.repository.*;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -121,6 +120,11 @@ public class IndexingServiceImpl implements IndexingService {
         return false;
     }
 
+    /**
+     * Подготавливает сайт для индексации: удаляет старые данные, создает новую запись.
+     * @param configSite конфигурация сайта
+     * @return подготовленный объект Site
+     */
     private Site prepareSiteForIndexing(searchengine.config.Site configSite) {
         Site existingSite = siteRepository.findByUrl(configSite.getUrl());
         if (existingSite != null) {
@@ -138,6 +142,9 @@ public class IndexingServiceImpl implements IndexingService {
         return siteRepository.save(site);
     }
 
+    /**
+     * Мониторит выполнение задач индексации.
+     */
     private void monitorSiteIndexing() {
         while (isIndexingRunning && !allTasksCompleted()) {
             try {
@@ -151,6 +158,10 @@ public class IndexingServiceImpl implements IndexingService {
         siteExecutor.shutdown();
     }
 
+    /**
+     * Проверяет завершение всех задач индексации.
+     * @return true если все задачи завершены
+     */
     private boolean allTasksCompleted() {
         for (Future<?> future : siteFutures) {
             if (!future.isDone()) {
@@ -160,6 +171,11 @@ public class IndexingServiceImpl implements IndexingService {
         return true;
     }
 
+    /**
+     * Обновляет статус всех сайтов с указанным значением.
+     * @param status новый статус
+     * @param errorMessage сообщение об ошибке (если есть)
+     */
     private void updateAllSitesStatus(SiteStatus status, String errorMessage) {
         siteRepository.findAll().forEach(site -> {
             if (site.getStatus() == SiteStatus.INDEXING) {
@@ -173,6 +189,12 @@ public class IndexingServiceImpl implements IndexingService {
         });
     }
 
+    /**
+     * Обновляет статус конкретного сайта.
+     * @param url URL сайта
+     * @param status новый статус
+     * @param error сообщение об ошибке (если есть)
+     */
     private void updateSiteStatus(String url, SiteStatus status, String error) {
         Site site = siteRepository.findByUrl(url);
         if (site != null) {

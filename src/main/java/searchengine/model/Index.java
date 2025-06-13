@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Сущность для хранения индексов (связей между страницами и леммами)
+ */
 @Entity
 @Table(name = "`index`")
 @Getter
@@ -15,12 +18,12 @@ public class Index {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "page_id", nullable = false)
-    private Page page;
+    private Page page; // Связанная страница
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lemma_id", nullable = false)
-    private Lemma lemma;
+    private Lemma lemma; // Связанная лемма
 
     @Column(name = "`rank`", nullable = false)
-    private Float rank;
+    private Float rank; // Ранг (вес) связи
 }

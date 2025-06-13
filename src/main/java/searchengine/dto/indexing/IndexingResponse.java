@@ -2,10 +2,13 @@ package searchengine.dto.indexing;
 
 import lombok.Data;
 
+/**
+ * Ответ API для операций индексации
+ */
 @Data
 public class IndexingResponse {
-    private boolean result;
-    private String error;
+    private boolean result; // Результат операции
+    private String error; // Сообщение об ошибке
 
     public IndexingResponse(boolean result) {
         this.result = result;

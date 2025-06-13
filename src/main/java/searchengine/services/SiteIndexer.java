@@ -18,6 +18,9 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
+/**
+ * Класс для индексации отдельного сайта
+ */
 @Slf4j
 public class SiteIndexer {
     private final String baseUrl;
@@ -36,6 +39,9 @@ public class SiteIndexer {
     private final AtomicInteger successfullySaved = new AtomicInteger(0);
     private final AtomicInteger failedPages = new AtomicInteger(0);
 
+    /**
+     * Конструктор индексатора сайта
+     */
     public SiteIndexer(String baseUrl, Site site,
                        PageRepository pageRepository,
                        SiteRepository siteRepository,
@@ -54,6 +60,9 @@ public class SiteIndexer {
         this.executor = Executors.newFixedThreadPool(properties.getMaxConcurrentPages());
     }
 
+    /**
+     * Основной метод индексации всего сайта
+     */
     public void indexSite() throws Exception {
         try {
             log.info("Starting indexing for: {}", site.getName());
@@ -76,6 +85,9 @@ public class SiteIndexer {
         }
     }
 
+    /**
+     * Метод для индексации одной страницы
+     */
     public void indexSinglePage(String url) throws Exception {
         try {
             log.info("Indexing single page: {}", url);

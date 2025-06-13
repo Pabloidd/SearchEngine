@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Сущность для хранения лемм
+ */
 @Entity
 @Table(name = "lemma")
 @Getter
@@ -15,11 +18,11 @@ public class Lemma {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "site_id", nullable = false)
-    private Site site;
+    private Site site; // Связанный сайт
 
     @Column(nullable = false)
-    private String lemma;
+    private String lemma; // Текст леммы
 
     @Column(nullable = false)
-    private Integer frequency;
+    private Integer frequency; // Частота встречаемости
 }
